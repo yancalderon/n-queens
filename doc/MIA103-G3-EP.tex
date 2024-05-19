@@ -1,0 +1,476 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage[style=ieee]{biblatex}
+% \usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{tabularx}  % Añade este paquete en el preámbulo de tu documento
+\newcolumntype{C}{>{\centering\arraybackslash}X} 
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\renewcommand{\figurename}{Fig.}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\addbibresource{references.bib}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Problema de las n-reinas\\
+}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Yan Franco Calderon Felix}
+\IEEEauthorblockA{\textit{Universidad Nacional de Ingeniería } \\
+\textit{Escuela de Posgrado}\\
+\textit{Fundamentos de la Inteligencia Artificial}\\
+Lima, Perú \\
+ycalderonf@uni.pe / 0009-0007-4926-046X}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} William Hanco}
+\IEEEauthorblockA{\textit{Universidad Nacional de Ingeniería} \\
+\textit{Escuela de Posgrado}\\
+\textit{Fundamentos de la Inteligencia Artificial}\\
+Lima, Perú \\
+whanco@gmail.com}
+\and
+\IEEEauthorblockN{3\textsuperscript{rd} Omar Parihuana}
+\IEEEauthorblockA{\textit{Universidad Nacional de Ingeniería} \\
+\textit{Escuela de Posgrado}\\
+\textit{Fundamentos de la Inteligencia Artificial}\\
+Lima, Perú \\
+omar.parihuana@gmail.com}
+\and
+\IEEEauthorblockN{4\textsuperscript{th} Julio Talaverano}
+\IEEEauthorblockA{\textit{Universidad Nacional de Ingeniería} \\
+\textit{Escuela de Posgrado}\\
+\textit{Fundamentos de la Inteligencia Artificial}\\
+Lima, Perú \\
+jtalaverano@uni.edu.pe }
+\and
+\IEEEauthorblockN{5\textsuperscript{th} Hilber Alexander Cieza Delgado}
+\IEEEauthorblockA{\textit{Universidad Nacional de Ingeniería} \\
+\textit{Escuela de Posgrado}\\
+\textit{Fundamentos de la Inteligencia Artificial}\\
+Lima, Perú \\
+alexcidd@hotmail.com }
+}
+
+\maketitle
+
+\begin{abstract}
+Existen multiples enfoques para resolver el problema de las n-reinas y la complejidad del problema radica en el tamaño N del número de reinas a ubicar en el tablero sin ataque entre ellas. En este artículo partimos de una definión ontologia para abordar el problema, también usamos un enfoque matematico para representar y explicar las estructuras y operaciones realizadas, y finalmente construimos un programa con el paradigma orientado a objetos que implementa un método sistemático de busqueda en espacio de estados para la solución del problema para un tamaño de N pequeño. 
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+
+N-Queens, búsqueda en profundidad, DFS, backtracking
+\end{IEEEkeywords}
+
+\section{Introduction}
+El problema de las n Reinas, problema clásico de búsqueda, consiste en encontrar una distribución de N reinas en un tablero tipo ajedrez de tamaño N x N, sin que las N reinas se ataquen entre sí.
+El problema de las N reinas ha sido estudiado por más de un siglo por muchos matemáticos famosos, es un trabajo anónimo, que luego fue atribuido a un jugador de ajedrez alemán Max Benzel. La publicación detallada más antigua que se conoce fue realizada por Nauck en 1850. Ese mismo año Gaus postuló la existencia de 72 soluciones para n=8. Luego en 1874, Glaisher probó la existencia de 92 soluciones \cite{r1}.
+El problema de las N reinas es utilizado en informática para demostrar varios algoritmos como retroceso, generación de permutaciones, paradigma divide y vencerás y redes neuronales \cite{r5_set_backtrack}.
+Desde el punto de vista computacional es un problema bastante complicado porque hay muchos arreglos posibles para el problema de n reinas. Los algoritmos de fuerza bruta intentan encontrar todas las soluciones comprobando todos estos arreglos, pero esto no es práctico para valores grandes de N. Se han propuesto varios enfoques diferentes para resolver el problema de las N reinas, como: el uso de búsqueda de retroceso (Bitner y Reingold, 1975), búsqueda local y técnicas de minimización de conflictos (Sosic y Gu, 1994), redes neuronales (Onomi et al., 2011 , Bharitkar y Mendel, 2000), métodos heurísticos de búsqueda (Kale, 1990), algoritmos probabilísticos de búsqueda local (Sosic y Gu, 1991) y programación entera (Foulds y Johnston, 1984) \cite{r7_parallel}.
+En este artículo abordaremos el problema de las n-reinas (para un N pequeño > 8) con un enfoque de busqueda no informada para encontrar una solución.
+
+\section{Antecedentes}
+Del trabajo realizado por Spading, \& Aninas \cite{r3_bfs_dfs} en \autoref{tab:tabla_antecedentes} se presentan los resultados obtenidos de análisis de profundidad y en anchura en la solución del problema de n reinas.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{N} & \textbf{Tiempo (en minutos)} & \textbf{Anchura} \\
+\hline
+8 & 0:05 & 0:53 \\
+10 & 0:15 & 1:47 \\
+15 & 0:32 & 4:29 \\
+20 & 0:51 & 11:34 \\
+25 & 2:05 & 27:08 \\
+30 & 4:27 & \>30:00 \\
+40 & 8:13 & \>30:00 \\
+45 & 17:58 & \>30:00 \\
+48 & \>30:00 & \>30:00 \\
+\hline
+\end{tabular}
+\caption{Busqueda de primera solcuión \cite{r3_bfs_dfs}}
+\label{tab:tabla_antecedentes}
+\end{table}
+
+De acuerdo a estos resultados, los tiempos de búsqueda por profundidad son inferiores a los por búsqueda por anchura, pueden representar a lo más un 10\% del tiempo por anchura. 
+Los algoritmos de búsqueda local resultan ser muy eficaces en la resolución de muchos PSRs. Los mínimos-conflictos son muy eficaces para muchos PSRs, en particular, cuando se ha dado un estado inicial razonable. En el problema de las N reinas, si no cuenta la colocación inicial de las reinas, el tiempo de ejecución de mínimos-conflictos es más o menos independiente del tamaño del problema. Resuelve hasta el problema de un millón de reinas en un promedio de 50 pasos (después de la asignación inicial) \cite{r2}.
+Para el análisis de este tipo de problemas son importantes los siguientes elementos:
+\begin{itemize}
+    \item El tamaño del espacio de búsqueda y su conectividad, si el tamaño es demasiado grande entonces la solución óptima es irrealizable. 
+    \item Conectividad entre estados.
+\end{itemize}
+Para la solución al problema de N reinas es fundamental definir los siguiente conceptos:
+\begin{itemize}
+    \item Búsqueda en profundidad, esta estrategía de busqueda siempre expande el nodo más profundo del árbol de búsqueda, trabaja sistemáticamente hacia una profundidad, antes de considerar otro camino. Trabaja mediante el algoritmo LIFO, que aplica la búsqueda en profundidad con una función recursiva que se llama en cada uno de sus hijos \cite{r2}. En este proceso de búsqueda solo se genera un sucesor del nodo en cada paso; cuando se obtiene un nuevo sucesor, se le aplica a este un operador y se obtiene un nuevo sucesor, y así sucesivamente \cite{r8_book_nilsson}.
+\item Vuelta atrás (Backtracking), En un proceso de búsqueda en profundidad, cuando se llegó a la máxima profundidad y la solución no ha sido encontrada, la búsqueda regresa al nivel anterior y explora otra alternativa restante de ese nivel. En la búsqueda hacia atrás, sólo se genera un sucesor a la vez; cada nodo parcialmente expandido recuerda qué sucesor se expande a continuación \cite{r2}.
+\end{itemize}
+El resultado esperado es construir un agente que logre la condición meta de poder ubicar la n reina sin que otra reina ataque en un tablero tipo ajedrez de N x N.
+
+\section{Contenido}
+
+\subsection{Planteamiento del problema}\label{AA}
+Basado en las referencias revisadas, el presente trabajo presentará una solución al problema de las n-reinas utilizando un enfoque de busqueda sistemático, antes de ahondar en la solución definiremos conceptos escenciales.\\
+\subsubsection{Ontologia}\label{AA_1}
+Para plantear una solucion estructurada es importante la conceptualización de los conceptos presentes en el problema, a continuación se presentan las siguientes definiciones:
+\begin{itemize}
+\item El tablero: Es el conjunto de celdas colindantes que forman el tablero de tamaño NxN. Podemos definir a un tablero como una matriz cuadrada $C_n$ de orden N, donde $i$ representa una fila y $j$ representa una columna de la matriz, $i,j$ pueden tomar valores enteros desde $0$ hasta $N-1$.\autoref{fig:ontologia1}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/ontologia1.png}
+    \caption{Tablero de ajedres de orden N (Elaboración propia)}
+    \label{fig:ontologia1}
+\end{figure}
+
+\item La celda: Es la unidad básica para colocar una pieza del ajedrez, en este caso: la reina. Puede ser blanco o negro y le podemos atribuir dos estados, uno ocupado y otro libre. Cada celda puede ser identificada por los indices $i, j$ del tablero, definiremos el conjunto de celdas como $C = (c_{ij})$. 
+
+\item La Reina y sus desplazamientos: En el marco de un juego de ajedrez, la reina es una pieza fundamental por su capacidad de desplazamiento. Puede desplazarse en lateral izquierdo o derecho, avanzar adelante o atrás y en cualquiera de las diagonales, como se muestra en la imagen.
+\autoref{fig:ontologia2}
+.Al conjunto de las n reinas la denominaremos $R$ y una reina en especifico con $r / r=\{0, 1,..., N-1\}$
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/ontologia2.png}
+    \caption{Desplazamientos de la reina (Elaboración propia)}
+    \label{fig:ontologia2}
+\end{figure}
+
+\end{itemize}
+Al trabajar con un enfoque basado en una busqueda sistemática, un estado del problema es una configuración parcial de la solución. Inicialmente no hay ninguna reina en el tablero, luego agregamos una reina y asi sucesivamente vamos iterando de forma ordenada. El conjunto de configuraciones del tablero y las reinas conformarán el \textit{espacio de estados} del problema. Definiremos el problema de las n-reinas con los siguiente componentes:\\
+
+\subsubsection{Estado inicial}\label{AA_2}
+Ninguna reina está colocada sobre el tablero, este estado representara el punto de partida en el árbol de busqueda y será considerado el nodo raíz. Como la primera reina esta representada por el numero $0$, entonces podemos representar una celda vacia con valor -1, es decir $c_{ij} = -1$
+\autoref{fig:ontologia3}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/ontologia3.png}
+    \caption{Estado inicial (Elaboración propia)}
+    \label{fig:ontologia3}
+\end{figure}
+
+\subsubsection{Estado Meta y prueba de meta}\label{AA_3}
+Todas reina $r$ colocada sobre el tablero de dimension NxN y ninguna reina es atacada por otra. A continuación, se muestra una de las soluciones en un tablero de 9x9.
+\autoref{fig:ontologia4}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/ontologia4.png}
+    \caption{Estado meta (Elaboración propia)}
+    \label{fig:ontologia4}
+\end{figure}
+
+\subsubsection{Operadores}\label{AA_4}
+De forma conveniente podemos ubicar la primera reina en la primera celda de la esquina superior izquierda del tablero, luego, esta reina bloqueará toda la fila en ataque. Para ubicar una segunda reina podemos movernos a la segunda fila del tablero e intentar colocar la reina en alguna de las celdas, para colocar esta segunda reina en la segunda fila debemos verificar que la celda elegida no se encuentre en el conjunto de celdas de desplazamiento de la primera, basado en el razonamiento previo se definen los siguientes operadores:
+\begin{itemize}
+\item Avanzar una fila en el tablero: Ubicamos la reina $r=i$ en la fila i $(i = 0, 1, 2,..., n)$
+\item Avanzar una columna en el tablero: Ubicamos la reina $r=j$ en la columna j $(j = 0, 1, 2,..., n)$
+\item Verificar que una reina no sea atacada por otra reina: Consiste en validar que la reina $r_i$ no este siendo atacada por las reinas colocadas previamente, es decir $\forall r_{previo} \in R / r_{previo}<i$. Al iterar fila por fila descartamos colocar una reina en la misma fila que otras, por consiguiente la validación a nivel de columna se realizaría de la siguiente forma: $$j[r_i] \neq j[r_{previo}], \forall r_{previo}<i$$. La validación de no ataque en diagonal la podemos representar de la siguiente manera: $$|i[r_i]-j[r_i]| \neq |i[r_{previo}]-j[r_{previo}]|,$$ Esto se debe cumplir $\forall r_{previo} \in R / r_{previo}<i$, es decir que el valor absoluto de la diferencia entre la fila y columna de una reina no debe ser igual no debe ser igual a la diferencia de otra reina.
+\item Colocar reina en una celda: Una vez que hayamos verificado una posicion valida para la reina $r=i$, entonces asignamos el valor a la celda de la siguiente forma $c_{ij} = r = i$ que significa que la reina $r$ esta ubicada en la celda $c_{ij}$ con fila $i$ y columna $j$.
+\end{itemize}
+
+\subsubsection{Función sucesora}\label{AA_5}
+La función sucesor ejecutará los operadores definidos previamente, y retornará un estado sucesor\cite{r2}. Para nuestro problema estan definidos los operadores y el estado sucesor devuelto será una configuración parcial o total del tablero con $r=i$ reinas colocadas en el mismo.
+
+\subsubsection{Test objetivo}\label{AA_6}
+Prueba que determina si un estado es un estado objetivo o meta \cite{r2}. En nuestro caso definiremos el test objetivo como una funcion que comprueba si cada elemento $r$ del conjunto $R$ de las reinas esta ubicado  en una celda del tablero, es decir, si recorremos cada fila $i$ del tablero debe existir un $c{ij} \neq\ -1$.
+
+\subsubsection{Costo por cada operador}\label{AA_7}
+El costo de cada movimiento del valor de la reina es $1$, así que el costo de encontrar la primera solución es el número de movimientos realizados para alcanzar dicho objetivo.
+
+\subsubsection{Número de soluciones}\label{AA_8}
+Para un tablero de tamaño N<=18, se tienen las siguientes soluciones \autoref{tab:tabla_1}
+\begin{table}[htbp]
+\caption{Numero de soluciones n-reinas \cite{r6_erbas}}
+\centering
+\begin{center}
+\begin{tabularx}{\columnwidth}{|C|C|C|C|}
+\hline
+N & N° Soluciones & N & N° Soluciones \\
+\hline
+1 & 1 & 10 & 724 \\
+2 & 0 & 11 &  2680 \\
+3 & 0 & 12 &  14200 \\
+4 & 2 & 13 &  73732 \\
+5 & 10 & 14 &  365596 \\
+6 & 4 & 15 &  2279184 \\
+7 & 40 & 16 & 14772512 \\
+8 & 92 & 17 & 95815104 \\
+9 & 352 & 18 & 666090624 \\
+\hline
+\end{tabularx}
+\label{tab:tabla_1}
+\end{center}
+\end{table}
+
+\subsubsection{Completitud}\label{AA_9}
+Un algoritmo es completo si garantiza encontrar una solución cuando esta exista, para nuestro caso según las pruebas realizadas en \autoref{pruebas}. fijamos una profundizad maxima para $N=30$, por lo tanto diremos que para $N<30$ nuestra solucion es completa.
+
+\subsubsection{Complejidad}\label{AA_10}
+Se refiere al tiempo que se demora en encontrar una solución y la complejidad en espacio, es decir, cuanta memoria se necesita para el funcionamiento de la búsqueda, La complejidad se considera respecto a alguna medida de la dificultad del problema. La complejidad del problema crece exponencialmente con la cantidad de reinas que se requiere colocar en el tablero, ello se debe al aumento del espacio de estados \cite{r2}. Asimismo, podemos clasificar en: P, Polinomial, que quiere decir que el algoritmo requiere un tiempo polinomial; y NP, polinomio no determinístico, significa que el algoritmo requiere un tiempo que tiende a ser exponencial en función del tamaño de la instancia del problema para resolverlo. \cite{r2}. Usando la notación $O()$ vemos que la forma más extensa en el problema de las n-reinas, expanderá cada nodo hasta la raiz con un factor de ramificación maximo dado por $factor_ramificacion_max = N$, por lo tanto tendriamos una complejidad $O(n^n)$. En base a las literatura revisada \cite{r5_set_backtrack} como parte de nuestro diseño, como veremos más adelante, no guardaremos y por lo tanto no se instanciarán nodos con estados donde existan reinas en ataque, luego, la complejidad del algoritmo desarrollado se acercará en el peor de los casos a una complejidad $O(n!)$, donde $n$ es el número de reinas.
+
+\subsubsection{Optimalidad}\label{AA_10}
+El enfoque aplicado basado en los resultados de las investigaciones en \cite{r3_bfs_dfs} y \cite{r5_set_backtrack} podemos decir que óptimo en el contexto de las estrategias de busqueda no informada, ya que realiza un menor número de exploraciones de nodos en el árbol de busqueda.\\
+
+Una vez formulado el problema y los componentes del mismo, pasamos a resolver. Realizaremos la resolucion mediante busqueda en un espacio de estados \cite{r2}, para ello, basado en la literatura previa utilizaremos un árbol de busqueda, este árbol será generado por el estado inicial (tablero vacio de orden N) y la función sucesor. Al abordar el problema como un problema de busqueda no informada que encuentre una solución, hemos visto que la estrategia de busqueda primero en profundidad (DFS por sus siglas en ingles) es mas eficiente que otras estrategias de su clase \cite{r3_bfs_dfs}. La raiz del arbol de busqueda será el nodo que tenga el estado inicial, luego iniciamos la busqueda y antes de cada transición entre estados aplicaremos el test objetivo, si no estamos en un estado objetivo (o meta) tenemos que expandir el estado actual y generar asi un nuevo conjunto de estados visitando el nodo mas profundo en la frontera actual del árbol, donde los nodos no tienen ningun sucesor, cuando esos nodos se expanden, son quitados de la frontera así entonces la búsqueda retrocede al siguiente nodo más superficial que todavía tenga sucesores. inexplorados \cite{r2}. En nuestro caso de forma particular veremos que al visitar un nodo de tipo hoja del arbol con nivel igual a N, si pasa el test objetivo, encontraremos una solución al problema.
+
+Para la implementación de la estregia DFS podemos usar una estructura de datos stack (o pila) o una función recursiva que se llame en cada uno de los nodos hijo \cite{r2}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{img/representacion1.png}
+    \caption{Representación sémantica de la solución (Elaboración propia)}
+    \label{fig:ontologia3}
+\end{figure} 
+
+\subsubsection{Test objetivo}\label{AA_6}
+
+\subsection{Representación de estados y sus métodos}
+Para representar un estado del problema de las n-reinas, definiremos una clase Estado, la cual representa un tablero y la ubicación de las reinas sobre el mismo.
+\subsubsection{Atributos}\label{AA_1}
+\begin{itemize}
+\item \texttt{tablero}: El tablero como vimos en su definición ontologica lo representamos como una matriz, sin embargo, ya que solo nos interesa saber la ubicación de la celda donde estan colocadas las reinas,  representaremos esa matriz como un vector (arreglo unidimensional) de esta forma seremos mas eficientes con el uso de la memoria. Los indices del vector $0, 1, ..., n-1$ indican la fila en la que se encuentra una reina. Los valores del arreglo que están en el rango de $(0, 1, ..., n-1)$ indican la columna en la que se encuentra una reina, teniendo los valores de fila y columna sabemos la ubicación de la reina en un tablero bidimensional. Un valor de $-1$ indica que no hay reina en esa casilla.
+\end{itemize}
+\subsubsection{Métodos}\label{AA_1}
+\begin{itemize}
+\item \texttt{\_\_init\_\_}: Constructor que inicializa el objeto estado.
+\item \texttt{es\_seguro}: Función auxiliar para verificar que una reina se puede colocar en la posición i, j sin que sea atacada por otra reina
+\item \texttt{sucesor}: Función sucesor para el cálculo del estado siguiente.
+\item \texttt{es\_meta}: función prueba de meta, que verifica si el tablero ya tiene colocada las n reinas colocadas en el tablero (verificar si el valor -1 no está presente en la lista) en ese caso retorna True
+\item \texttt{\_\_str\_\_}: Método especial en python que representa un objeto como una cadena de caracteres, este método es invocado automáticamente por la funcion print() o str()
+\end{itemize}
+
+\subsection{Representación de los nodos y sus métodos}
+Para representar un nodo del árbol de búsqueda, definiremos una clase Nodo, un objeto nodo contendrá un estado del tablero
+\subsubsection{Atributos}\label{AA_1}
+\begin{itemize}
+\item \texttt{estado}: Instancia de la clase \texttt{Estado}, toma el valor de un estado específico del tablero para la instancia del nodo, cada nodo es instanciado con un estado que tenga las reinas en una posición valida (sin ataque por otras reinas), descartando instanciar nodos con estados que no cumplan dicha condición.\cite{r5_set_backtrack}.
+\item \texttt{hijos}: Lista de nodos hijos.
+\item \texttt{nivel}: el nivel del nodo en el árbol (profundidad del nodo).
+\item \texttt{id}: Identificador de la instancia nodo
+\item \texttt{cerrado}: Toma valor True cuando el nodo a un no fue revisado, y False cuando ya fue visitado.
+\item \texttt{costo}: Costo asociado al nodo
+
+\end{itemize}
+\subsubsection{Métodos}\label{AA_1}
+\begin{itemize}
+\item \texttt{\_\_init\_\_}: Constructor que inicializa el objeto nodo.
+\item \texttt{\_\_str\_\_}: Método especial en python que representa un objeto como una cadena de caracteres, este método es invocado automáticamente por la funcion print() o str()
+\item \texttt{obtener\_estado}: Retorna el estado asociado al nodo en su representación como vector unidimensional.
+\item \texttt{agregar\_hijo}: Agrega un nodo a la lista de nodos hijos.
+\end{itemize}
+
+\subsection{Representación del arbol y sus métodos}
+Para representar un árbol de búsqueda, definiremos una clase Arbol. Un objeto árbol contendrá los nodos y los métodos para realizar el recorrido en la búsqueda del estado meta.
+    
+    \subsubsection{Atributos}\label{AA_1}
+        \begin{itemize}
+        \item \texttt{raiz}: Nodo raíz del árbol de búsqueda.
+        \item \texttt{nombre}: etiqueta del nombre del árbol
+        \item \texttt{profundidad\_maxima}: variable auxiliar para medir la profundidad del arbol durante la busqueda.
+        \item \texttt{pila}: estructura de datos (lista) que apilará los nodos para su procesamiento.
+        \item \texttt{nodos\_abiertos}: contador de nodos abiertos durante el recorrido
+        \item \texttt{nodos\_cerrados}: contador de nodos cerrados 
+        \item \texttt{max\_profundidad}: Profundidad maxima permitida que puede alcanzar el arbol 
+        \item \texttt{max\_tiempo}: Tiempo máximo permitido para la búsqueda del estado meta
+        \end{itemize}
+    \subsubsection{Métodos}\label{AA_1}
+        \begin{itemize}
+        \item \texttt{\_\_init\_\_}: Constructor que inicializa el objeto arbol.
+        \item \texttt{agregar\_a\_pila}: adiciona un nodo a pila.
+        \item \texttt{eliminar\_de\_pila}: elimina un nodo de la pila y retorna el objeto eliminado.
+        \item \texttt{verificar\_profundidad}: verifica si la profundidad del arbol durante la expansión esta dentro de la profundidad máxima permitida
+        \item \texttt{verificar\_tiempo}: verifica si el tiempo de ejecución de la busqueda esta dentro del tiempo maximo permitido.
+        \item \texttt{DFS\_pila}: Realiza la búsqueda primero en profundida (DFS) en el espacio de estados del árbol, utiliza una pila que implementa el mecanismo LIFO para el procesamiento de los nodos, este metodo invoca a las funciones \texttt{verificar\_tiempo()} y \texttt{verificar\_profundidad()} para finalizar el procedimiento y evitar entrar en un bucle infinito. A travez de un bucle \texttt{while} va expandiente los nodos, eliminando de la pila los nodos visitados y agregado los nodos de la frontera (o nodos por visitar). En cada iteración verifica a travez del metodo \texttt{nodo.es\_meta()} si hemos alcanzado el estado objetivo, cuando encuentra una solución el algoritmo termina y retorna un objeto \texttt{nodo} con el estado objetivo, en caso se supere el tiempo o la profundidad fijadas, retornara un nodo con un estado parcial de la solución.
+        \item \texttt{DFS\_recursividad}: Similar al metodo \texttt{DFS\_pila()} realiza la búsqueda primero en profundida (DFS) en el espacio de estados del árbol, sin embargo a diferencia del primero utiliza una llamada recursiva con variable de entrada el hijo de cada nodo explorado.
+        \end{itemize}
+
+\section{Prueba y analisis de resultados}\label{pruebas}
+\subsection{Pruebas del procedimiento}
+En esta sección se presentan los resultados de las ejecuciónes realizadas con el programa construido en python. Estas pruebas fueron realizadas usando el metodo de busqueda \texttt{DFS\_pila()}. 
+Por fines didacticos se explicará el procedimiento del paso a paso con un tamaño de tablero $4\times4$ entonces $N=4$.
+Partimos del estado inicial representado por el tablero vacio:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/prueba_n4_1.png}
+    \caption{inicialización de variables para n = 4 (Elaboración propia)}
+    \label{fig:prueba_n4_1}
+\end{figure} 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/pruebao_n4_1.png}
+    \caption{Representación del estado inicial para n = 4 (Elaboración propia)}
+    \label{fig:pruebao_n4_1}
+\end{figure} 
+
+como se ve en \autoref{fig:prueba_n4_1} el estado inicial se representa con el vector $[-1, -1, -1, -1]$, los puntos impresos debajo del vector representan al tablero vacio, esta representación equivale a lo mostrado en \autoref{fig:pruebao_n4_1}. Una vez definido el estado inicial, estado asignado al nodo raiz del arbol e instanciado el arbol de busqueda, procedemos con la ejecución del metodo $DFS\_pila()$ \autoref{fig:prueba_n4_2}. El metodo al encontrar una solución devuelve el nodo con el estado objetivo y finaliza. Luego imprimimos el estado objetivo devuelto por el programa.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/prueba_n4_2.png}
+    \caption{Ejecución del algoritmo de busqueda para n = 4 (Elaboración propia)}
+    \label{fig:prueba_n4_2}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/prueba_n4_3.png}
+    \caption{Resultado de la busqueda para n = 4 (Elaboración propia)}
+    \label{fig:prueba_n4_3}
+\end{figure}
+
+El resultado mostrado en \autoref{fig:prueba_n4_3} nos indican que se encontró con el vector  $[1, 3, 0, 2]$ y la representación del tablero se imprime debajo donde el $.$ representa una celda vacia y \texttt{Q} una reina, es decir representa el tablero como lo mostrado en \autoref{fig:prueba_n4_2}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/pruebao_n4_2.png}
+    \caption{Representación del estado meta para n = 4 (Elaboración propia)}
+    \label{fig:pruebao_n4_2}
+\end{figure}
+
+En base a los atributos y metodos de las clases $Arbol$ y $Nodo$ podemos obtener las metricas de ejecución como se muestran en \autoref{fig:prueba_n4_2}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/prueba_n4_4.png}
+    \caption{Representación del estado meta para n = 4 (Elaboración propia)}
+    \label{fig:prueba_n4_4}
+\end{figure}
+
+Modificando el código para que imprima cada nodo generado durante la busqueda y su nivel de profundidad, obtenemos un resultado como se muestra en \autoref{fig:prueba_n4_2}, 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/prueba_n4_6_arbol.png}
+    \caption{Lista de nodos generados (Elaboración propia)}
+    \label{fig:prueba_n4_6_arbol}
+\end{figure}
+tomaremos cada nodo impreso en la pantalla de google colab y dandole forma al arbol construido obtendremos lo mostrado en \autoref{fig:prueba_n4_7_arbol}.
+
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/prueba_n4_7_arbol.png}
+    \caption{árbol generado para n = 4 (Elaboración propia)}
+    \label{fig:prueba_n4_7_arbol}
+\end{figure} 
+
+Se puede verificar que las métricas generadas en \autoref{fig:prueba_n4_2} también son deducibles de la imagen del arbol construido en \autoref{fig:prueba_n4_7_arbol}, entonces para la ejecución de la busqueda con un tamaño $N=4$ la profundidad maxima alcanza fue de $4$ y la pila procesó 9 nodos (identificados con una $X$ de color verde) hasta encontrar la solución, quedando 2 nodos por ser visitados (Identificados con una linea de color amarillo), los nodos enmarcados con un color naranja representan la ruta de la solución con identificadores de nodo \texttt{2->4->10->11->12}, y su representación como estados del problema se puede verificar en \autoref{fig:prueba_n4_5}. Cabe recalcar que según se mencionó en la definicion de la clase \texttt{Nodo}, existirán estados intermedios con posiciones de reinas invalidas (ataque), estos no instancia un nodo y no son almacenados en el árbol. Un ejemplo de estos estados intermedios se puede verificar en \autoref{fig:pruebao_n4_3}, donde los vectores estado $[1,0,-1,-1]$, $[1,1,-1, -1]$, $[1,2,-1,-1]$ son configuraciones invalidas por lo tanto el vector valido $[1,3,-1,-1]$ genera una instancia \texttt{nodo} y se inserta al árbol.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/prueba_n4_5.png}
+    \caption{Ruta de la solución para n = 4 (Elaboración propia)}
+    \label{fig:prueba_n4_5}
+\end{figure} 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/pruebao_n4_3.png}
+    \caption{Estados intermedios (Elaboración propia)}
+    \label{fig:pruebao_n4_3}
+\end{figure} 
+
+A continuación presentamos una prueba realizada para un tamaño de N = 29.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/prueba_n29_1.png}
+    \caption{Solución para n = 29 (Elaboración propia)}
+    \label{fig:prueba_n29_1}
+\end{figure} 
+
+Como observamos en \autoref{fig:prueba_n29_1}, el algoritmo devolvió una solución en $92 seg.$ y habiendo procesado $1532240$ nodos del árbol de busqueda con una profundidad maxima de 29, en \autoref{fig:prueba_n29_1} se muestra la ruta de la solución.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/prueba_n29_2.png}
+    \caption{Ruta para n = 29 (Elaboración propia)}
+    \label{fig:prueba_n29_2}
+\end{figure} 
+Si ahora realizamos una prueba con un $N=31$ pero antes habiendo fijado un criterio de finalización de tiempo, en este caso para que el algoritmo termina si se supera los $120 seg.$ obtendremos el siguiente resultado \autoref{fig:prueba_n31_1}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/prueba_n31_1.png}
+    \caption{Solución parcial para n = 31 (Elaboración propia)}
+    \label{fig:prueba_n31_1}
+\end{figure} 
+
+Podemos observar que el programa culmina exactamente en $120 seg.$ y nos devuelve una configuración parcial de la solución al problema cuando se encontraba en una profundidad 28 y habiendo procesado $1821957$ de nodos, la ruta devuleta por el programa hasta ese punto se muestra en \autoref{fig:prueba_n31_2}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/prueba_n31_2.png}
+    \caption{ruta para n = 31 (Elaboración propia)}
+    \label{fig:prueba_n31_2}
+\end{figure} 
+
+\subsection{Análisis de resultados}
+Las medidas de rendimiento incluyen los criterios que determinan el éxito en el comportamiento del agente \cite{r2}. Definimos las siguientes variables:
+\begin{itemize}
+\item[1.] Tiempo de ejecución: Esta medida evalúa cuánto tiempo toma encontrar la primera solución. Se mide en segundos.
+\item[2.] Numero de pasos: Mide cuántos movimientos o pasos se necesitan para llegar a la primera solución.
+\end{itemize}
+Definimos el indicador de rendimiento: Tiempo por Paso que es cociente entre (1) y (2), teniendo los siguientes valores para el rango de valor de N entre $[8,18]$
+
+\begin{table}[htbp]
+\caption{Datos para obtener la primera solución}
+\centering
+\begin{center}
+\begin{tabularx}{\columnwidth}{|C|C|C|C|}
+\hline
+N (tamaño del Tablero) & Tiempo de Ejecución (segundos) (1) & Número de Pasos (2) & Tiempo por paso (1/2) \\
+\hline
+8 & \textasciitilde 0 & 113 & \textasciitilde 0 \\
+9 & \textasciitilde 0 & 41 & \textasciitilde 0 \\
+10 & \textasciitilde 0 & 102 & \textasciitilde 0 \\
+11 & \textasciitilde 0 & 52 & \textasciitilde 0 \\
+12 & \textasciitilde 0 & 261 & \textasciitilde 0 \\
+13 & \textasciitilde 0 & 111 & \textasciitilde 0 \\
+14 & 0.03124595 & 1899 & 0.000016 \\
+15 & 0.01562238 & 1539 & 0.000010 \\
+16 & 0.17185712 & 10052 & 0.000017 \\
+17 & 0.10936689 & 5374 & 0.000020 \\
+18 & 0.87493610 & 41299 & 0.000021 \\
+\hline
+\end{tabularx}
+\label{tab:tabla_2}
+\end{center}
+\end{table}
+
+de \autoref{tab:tabla_2} observamos que proporcionalmente toma menos número de pasos y tempo cuando N es impar, asi también el tiempo por paso se incrementa en correlación con N.
+
+
+\section{Conclusiones}
+\begin{enumerate}
+\item Es muy importante enfocar cualquier problema partiendo desde su definición ontologica, esto nos permitirá tener un comprensión y representación común de la realidad lo cual podremos comunicar de forma mas efectiva, así mismo el abordar la problematica con un enfoque matemático nos permite ver con más claridad un camino a la solución y plantear un diseño respaldado con teoria matematica, por ejemplo el uso de un vector en vez de una matriz para representar el estado del tablero nos permitió de alguna forma optimizar la memoria. 
+\item El procedimiento de búsqueda primero en profundidad para el problema de $N$ reinas es más eficiente que el procedimiento de búsqueda por anchura, y mejor aún si se realiza una poda de estados innecesarios, al vistar el nodo y expandirlo generamos nodos con una configuración valida del estado.
+\item El nivel de profundidad maximo del arbol coincide con el tamaño de la entrada $N$, entonces todos los nodos de nivel $N$ vienen a ser nodos hoja y si se logra expandir un nodo de este nivel y el estado de la hoja es valido, ese estado es una solución al problema.
+\item De acuerdo con el indicador de rendimiento: tiempo por paso, presentado en el análisis de resultados, se puede comprobar el logro de la condición meta para un $N > 8$. Asimismo, en la ejecución del algoritmo se verifica que cuando $N$ es impar requiere menos pasos y tiempo cunado N es impar. Asimismo, el tiempo por paso se incrementa en correlación con N. 
+\item Para la ejecución del programa con un tamaño de $N >= 30$ se esperó un tiempo prudente de aproximadamente $10min$, sin embargo la ejecución no terminó de procesar, concluyendo que $30$ es un valor critico, por lo tanto se creo un atributo max\_profundidad en la clase \texttt{Nodo} configurando este parametro con un valor de $30$.
+\item Como trabajo futuro, podemos encontrar algoritmos más eficientes para resolver problemas de n reinas basados en otras técnicas de inteligencia artificial y optmización.
+
+\end{enumerate}
+\section{Recomendaciones}
+Para solucionar el problema de N reinas, con $N > 8$, se consideró una solución mediante el enfoque de busqueda no informada y usando la estrategia de busqueda primero en profundidad, la construcción del agente ha permitido el logro de la condición meta para un $N < 30$ con tiempos de respuesta aceptables, para mayores valores  de $N$ el algoritmo no termina de procesar, es por ello que se recomienda la colocación de criterios de finalización (basado en profundida o tiempo) para evitar que el programa entre en un bucle infinito, estos limites asegurarán que el programa brinde una respuesta aunque parcial.
+Para valores de $N$ grandes $(N>500)$, según la literatura revisada se recomienda el uso de heurísticas, como por ejemplo el uso de la heuristica Hill-climbing o los algoritmos genéticos, también se invita al lector a revisar el articulo The min-conflicts heuristic: Experimental and theoretical results \cite{r4_nasa} que aborda una solución para tamaños de N muy grandes haciendo uso de una busqueda local usando mímos conflictos, según la literatura revisada este algoritmo puede resolver el problema de las con un  $N = 1000000$ en cuestión de segundos \cite{r2}.
+
+
+\renewcommand{\bibfont}{\footnotesize}
+\printbibliography
+
+\section*{Anexos}
+\begin{itemize}
+    \item \href{https://colab.research.google.com/drive/1JE-wPFCCjOML7mjrXCpK68u2_0-X67MF?usp=sharing}{Google colab link}
+    \item \href{https://github.com/yancalderon/n-queens}{Github link}
+\end{itemize}
+
+\end{document}
